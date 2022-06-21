@@ -78,3 +78,30 @@ const displayMovements = function (movements) {
 };
 
 displayMovements(account1.movements);
+
+const user = "Steven Thomas Williams";
+
+const createUserName = function (userAccounts) {
+  userAccounts.forEach((account) => {
+    account.userName = account["owner"]
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word[0])
+      .join("");
+    // return userName;
+  });
+};
+
+const calcDisplayBalance = function (movements) {
+  const balance = movements.reduce((prevMov, mov) => prevMov + mov, 0);
+  labelBalance.textContent = `${balance}EUR`;
+};
+
+calcDisplayBalance(account1.movements);
+
+createUserName(accounts);
+console.log(accounts);
+
+const deposits = [account1.movements.filter((mov) => mov > 0)];
+const withdrawal = [account1.movements.filter((mov) => mov < 0)];
+console.log(deposits, withdrawal);
