@@ -93,39 +93,64 @@ const calcDisplayBalance = function (movements) {
   labelBalance.textContent = `${balance}EUR`;
 };
 
-const calcDisplaySumary = function (movements) {
-  const inMovements = movements
+const calcDisplaySumary = function (acc) {
+  const inMovements = acc.movements
     .filter((mov) => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
   labelSumIn.textContent = `${inMovements}€`;
 
   const outMovements = Math.abs(
-    movements.filter((mov) => mov < 0).reduce((acc, mov) => acc + mov, 0)
+    acc.movements.filter((mov) => mov < 0).reduce((acc, mov) => acc + mov, 0)
   );
   labelSumOut.textContent = `${outMovements}€`;
 
-  const interestRate = 0.012; //only added if at less 1€ interest
-  const interest = movements
+  const interestRate = acc.interestRate / 100; //only added if at less 1€ interest
+  const interest = acc.movements
     .map((mov) => mov > 0 && mov * interestRate)
     .filter((interst) => interst >= 1)
     .reduce((acc, interest) => acc + interest, 0);
   labelSumInterest.textContent = `${interest}€`;
 };
 
+let currentAccount;
 const findAccount = function (nameAccount, userAccounts) {
-  const account = userAccounts.find((acc) => acc.owner === nameAccount);
+  const account = userAccounts.find((acc) => acc.userName === nameAccount);
   return account;
 };
 
-console.log(findAccount("Jessica Davis", accounts));
-calcDisplayBalance(account1.movements);
-displayMovements(account1.movements);
-calcDisplaySumary(account1.movements);
+createUserName(accounts);
+
+// Event Handlers
+btnLogin.addEventListener("click", function (ev) {
+  ev.preventDefault();
+  const account = findAccount(inputLoginUsername.value, accounts);
+  if (account?.pin === Number(inputLoginPin.value)) {
+    currentAccount = account;
+
+    // Display UI and message
+    labelWelcome.textContent = `Welcome back, ${
+      currentAccount.owner.split(" ")[0]
+    }`;
+    containerApp.style.opacity = 100;
+
+    // Clear fields
+    inputLoginUsername.value = inputLoginPin.value = "";
+    inputLoginPin.blur();
+
+    // Display movements
+    displayMovements(currentAccount.movements);
+
+    // Display balance
+    calcDisplayBalance(currentAccount.movements);
+
+    // Display Summary
+    calcDisplaySumary(currentAccount);
+  }
+});
 
 // Lectures
 const user = "Steven Thomas Williams";
 
-createUserName(accounts);
 console.log(accounts);
 
 const deposits = [account1.movements.filter((mov) => mov > 0)];
