@@ -112,6 +112,12 @@ const calcDisplaySumary = function (movements) {
   labelSumInterest.textContent = `${interest}€`;
 };
 
+const findAccount = function (nameAccount, userAccounts) {
+  const account = userAccounts.find((acc) => acc.owner === nameAccount);
+  return account;
+};
+
+console.log(findAccount("Jessica Davis", accounts));
 calcDisplayBalance(account1.movements);
 displayMovements(account1.movements);
 calcDisplaySumary(account1.movements);
