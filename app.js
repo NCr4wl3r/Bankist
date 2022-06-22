@@ -77,10 +77,6 @@ const displayMovements = function (movements) {
   });
 };
 
-displayMovements(account1.movements);
-
-const user = "Steven Thomas Williams";
-
 const createUserName = function (userAccounts) {
   userAccounts.forEach((account) => {
     account.userName = account["owner"]
@@ -97,11 +93,43 @@ const calcDisplayBalance = function (movements) {
   labelBalance.textContent = `${balance}EUR`;
 };
 
+const calcDisplaySumary = function (movements) {
+  const inMovements = movements
+    .filter((mov) => mov > 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumIn.textContent = `${inMovements}€`;
+
+  const outMovements = Math.abs(
+    movements.filter((mov) => mov < 0).reduce((acc, mov) => acc + mov, 0)
+  );
+  labelSumOut.textContent = `${outMovements}€`;
+
+  const interestRate = 0.012; //only added if at less 1€ interest
+  const interest = movements
+    .map((mov) => mov > 0 && mov * interestRate)
+    .filter((interst) => interst >= 1)
+    .reduce((acc, interest) => acc + interest, 0);
+  labelSumInterest.textContent = `${interest}€`;
+};
+
 calcDisplayBalance(account1.movements);
+displayMovements(account1.movements);
+calcDisplaySumary(account1.movements);
+
+// Lectures
+const user = "Steven Thomas Williams";
 
 createUserName(accounts);
 console.log(accounts);
 
 const deposits = [account1.movements.filter((mov) => mov > 0)];
 const withdrawal = [account1.movements.filter((mov) => mov < 0)];
+
+const euroToUsd = 1.1;
+
+const totalDepUsd = account1.movements
+  .filter((mov) => mov > 0)
+  .map((dep) => dep * euroToUsd)
+  .reduce((acc, dep) => acc + dep, 0);
+console.log(totalDepUsd);
 console.log(deposits, withdrawal);
