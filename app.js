@@ -88,9 +88,10 @@ const createUserName = function (userAccounts) {
   });
 };
 
-const calcDisplayBalance = function (movements) {
-  const balance = movements.reduce((prevMov, mov) => prevMov + mov, 0);
-  labelBalance.textContent = `${balance}EUR`;
+const calcDisplayBalance = function (currentAcc) {
+  const movements = currentAcc.movements;
+  currentAcc.balance = movements.reduce((prevMov, mov) => prevMov + mov, 0);
+  labelBalance.textContent = `${currentAcc.balance}EUR`;
 };
 
 const calcDisplaySumary = function (acc) {
@@ -113,6 +114,7 @@ const calcDisplaySumary = function (acc) {
 };
 
 let currentAccount;
+
 const findAccount = function (nameAccount, userAccounts) {
   const account = userAccounts.find((acc) => acc.userName === nameAccount);
   return account;
@@ -137,14 +139,39 @@ btnLogin.addEventListener("click", function (ev) {
     inputLoginUsername.value = inputLoginPin.value = "";
     inputLoginPin.blur();
 
-    // Display movements
-    displayMovements(currentAccount.movements);
+    updateUI(currentAccount);
+  }
+});
 
-    // Display balance
-    calcDisplayBalance(currentAccount.movements);
+const updateUI = function (currentAcc) {
+  // Display movements
+  displayMovements(currentAcc.movements);
 
-    // Display Summary
-    calcDisplaySumary(currentAccount);
+  // Display balance
+  calcDisplayBalance(currentAcc);
+
+  // Display Summary
+  calcDisplaySumary(currentAcc);
+};
+
+btnTransfer.addEventListener("click", function (ev) {
+  ev.preventDefault();
+  const destinyAccount = findAccount(inputTransferTo.value, accounts);
+  const ammount = Number(inputTransferAmount.value);
+
+  inputTransferAmount.blur();
+  inputTransferAmount.value = inputTransferTo.value = "";
+
+  if (
+    currentAccount.balance >= ammount &&
+    ammount > 0 &&
+    destinyAccount &&
+    destinyAccount.userName != currentAccount.userName
+  ) {
+    destinyAccount?.movements.push(ammount);
+    currentAccount.movements.push(-ammount);
+
+    updateUI(currentAccount);
   }
 });
 
