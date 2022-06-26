@@ -175,6 +175,25 @@ btnTransfer.addEventListener("click", function (ev) {
   }
 });
 
+btnClose.addEventListener("click", function (ev) {
+  ev.preventDefault();
+
+  const closeUser = inputCloseUsername.value;
+  const closePin = Number(inputClosePin.value);
+  if (
+    closeUser === currentAccount.userName &&
+    closePin === currentAccount.pin
+  ) {
+    const index = accounts.findIndex(
+      (acc) => acc.userName === currentAccount.userName
+    );
+    accounts.splice(index, 1);
+    inputCloseUsername.value = inputClosePin.value = "";
+    inputClosePin.blur();
+    containerApp.style.opacity = 0;
+  }
+});
+
 // Lectures
 const user = "Steven Thomas Williams";
 
