@@ -128,7 +128,8 @@ createUserName(accounts);
 btnLogin.addEventListener("click", function (ev) {
   ev.preventDefault();
   const account = findAccount(inputLoginUsername.value, accounts);
-  if (account?.pin === Number(inputLoginPin.value)) {
+  if (account?.pin === +inputLoginPin.value) {
+    // if (account?.pin === Number(inputLoginPin.value)) {
     currentAccount = account;
 
     // Display UI and message
@@ -166,7 +167,8 @@ const updateUI = function (currentAcc) {
 btnTransfer.addEventListener("click", function (ev) {
   ev.preventDefault();
   const destinyAccount = findAccount(inputTransferTo.value, accounts);
-  const ammount = Number(inputTransferAmount.value);
+  const ammount = +inputTransferAmount.value;
+  // const ammount = Number(inputTransferAmount.value);
 
   inputTransferAmount.blur();
   inputTransferAmount.value = inputTransferTo.value = "";
@@ -186,7 +188,8 @@ btnTransfer.addEventListener("click", function (ev) {
 
 btnLoan.addEventListener("click", function (ev) {
   ev.preventDefault();
-  const loanAmount = Number(inputLoanAmount.value);
+  const loanAmount = +inputLoanAmount.value;
+  // const loanAmount = Number(inputLoanAmount.value);
   inputLoanAmount.value = "";
   if (
     loanAmount > 0 &&
@@ -202,7 +205,8 @@ btnClose.addEventListener("click", function (ev) {
   ev.preventDefault();
 
   const closeUser = inputCloseUsername.value;
-  const closePin = Number(inputClosePin.value);
+  const closePin = +inputClosePin.value;
+  // const closePin = Number(inputClosePin.value);
   if (
     closeUser === currentAccount.userName &&
     closePin === currentAccount.pin
