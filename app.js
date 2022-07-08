@@ -103,18 +103,27 @@ const inputLoanAmount = document.querySelector(".form__input--loan-amount");
 const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
 
-const displayMovements = function (movements, sort = false) {
+const displayMovements = function (acc, sort = false) {
   containerMovements.innerHTML = "";
 
-  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+  const movs = sort
+    ? acc.movements.slice().sort((a, b) => a - b)
+    : acc.movements;
 
   movs.forEach((mov, i) => {
     const transactionType = mov > 0 ? "deposit" : "withdrawal";
+    const date = new Date(acc.movementsDates[i]);
+    const day = `${date.getDate()}`.padStart(2, 0);
+    const month = `${date.getMonth() + 1}`.padStart(2, 0);
+    const year = `${date.getFullYear()}`;
+    const dateMovStr = `${day}/${month}/${year}`;
+
     const htmlEl = `
       <div class="movements__row">
         <div class="movements__type movements__type--${transactionType}">${
       i + 1
     } ${transactionType}</div>
+    <div class="movements__date">${dateMovStr}</div>
         <div class="movements__value">${mov.toFixed(2)}€</div>
       </div>`;
     containerMovements.insertAdjacentHTML("afterbegin", htmlEl);
@@ -167,6 +176,7 @@ const findAccount = function (nameAccount, userAccounts) {
 createUserName(accounts);
 
 // Event Handlers
+
 btnLogin.addEventListener("click", function (ev) {
   ev.preventDefault();
   const account = findAccount(inputLoginUsername.value, accounts);
@@ -197,7 +207,7 @@ btnSort.addEventListener("click", function (ev) {
 
 const updateUI = function (currentAcc) {
   // Display movements
-  displayMovements(currentAcc.movements);
+  displayMovements(currentAcc);
 
   // Display balance
   calcDisplayBalance(currentAcc);
@@ -262,6 +272,27 @@ btnClose.addEventListener("click", function (ev) {
     containerApp.style.opacity = 0;
   }
 });
+
+labelBalance.addEventListener("click", () => {
+  [...document.querySelectorAll(".movements__row")].forEach((row, i) => {
+    if (i % 2 === 0) row.style.backgroundColor = "orangered";
+    else row.style.backgroundColor = "blue";
+  });
+});
+
+// Auto Log Fake:
+currentAccount = account1;
+updateUI(currentAccount);
+containerApp.style.opacity = 100;
+
+const now = new Date();
+// day/month/year
+const day = `${now.getDate()}`.padStart(2, 0);
+const month = `${now.getMonth() + 1}`.padStart(2, 0);
+const year = `${now.getFullYear()}`;
+const hour = `${now.getHours()}`.padStart(2, 0);
+const min = `${now.getMinutes()}`.padStart(2, 0);
+labelDate.textContent = `${day}/${month}/${year} ${hour}:${min}`;
 
 // Lectures
 const user = "Steven Thomas Williams";
