@@ -42,11 +42,11 @@ const account1 = {
   pin: 1111,
 
   movementsDates: [
-    "2019-11-18T21:31:17.178Z",
-    "2019-12-23T07:42:02.383Z",
-    "2020-01-28T09:15:04.904Z",
-    "2020-04-01T10:17:24.185Z",
-    "2020-05-08T14:11:59.604Z",
+    "2021-11-18T21:31:17.178Z",
+    "2021-12-23T07:42:02.383Z",
+    "2022-01-28T09:15:04.904Z",
+    "2022-04-01T10:17:24.185Z",
+    "2022-05-08T14:11:59.604Z",
     "2022-07-03T17:01:17.194Z",
     "2022-07-05T23:36:17.929Z",
     "2022-07-07T10:51:36.790Z",
@@ -62,14 +62,14 @@ const account2 = {
   pin: 2222,
 
   movementsDates: [
-    "2019-11-01T13:15:33.035Z",
-    "2019-11-30T09:48:16.867Z",
-    "2019-12-25T06:04:23.907Z",
-    "2020-01-25T14:18:46.235Z",
-    "2020-02-05T16:33:06.386Z",
-    "2020-04-10T14:43:26.374Z",
-    "2020-05-25T18:49:59.371Z",
-    "2020-07-26T12:01:20.894Z",
+    "2021-11-01T13:15:33.035Z",
+    "2021-11-30T09:48:16.867Z",
+    "2021-12-25T06:04:23.907Z",
+    "2022-01-25T14:18:46.235Z",
+    "2022-02-05T16:33:06.386Z",
+    "2022-04-10T14:43:26.374Z",
+    "2022-05-25T18:49:59.371Z",
+    "2022-07-06T12:01:20.894Z",
   ],
   currency: "USD",
   locale: "en-US",
@@ -110,10 +110,9 @@ const calcDaysPassed = (date1, date2) =>
 
 const formatMovementDate = function (date) {
   const daysPassed = calcDaysPassed(new Date(), date);
-  console.log(daysPassed);
   if (daysPassed === 0) return "today";
   else if (daysPassed === 1) return "yesterday";
-  else if (daysPassed <= 5) return `${daysPassed} days ago`;
+  else if (daysPassed <= 7) return `${daysPassed} days ago`;
   else {
     const day = `${date.getDate()}`.padStart(2, 0);
     const month = `${date.getMonth() + 1}`.padStart(2, 0);
@@ -210,12 +209,23 @@ btnLogin.addEventListener("click", function (ev) {
     // Create current date and time
     const now = new Date();
     // day/month/year
-    const day = `${now.getDate()}`.padStart(2, 0);
-    const month = `${now.getMonth() + 1}`.padStart(2, 0);
-    const year = `${now.getFullYear()}`;
-    const hour = `${now.getHours()}`.padStart(2, 0);
-    const min = `${now.getMinutes()}`.padStart(2, 0);
-    labelDate.textContent = `${day}/${month}/${year} ${hour}:${min}`;
+    // const day = `${now.getDate()}`.padStart(2, 0);
+    // const month = `${now.getMonth() + 1}`.padStart(2, 0);
+    // const year = `${now.getFullYear()}`;
+    // const hour = `${now.getHours()}`.padStart(2, 0);
+    // const min = `${now.getMinutes()}`.padStart(2, 0);
+    // labelDate.textContent = `${day}/${month}/${year} ${hour}:${min}`;
+    const options = {
+      hour: "numeric",
+      minute: "numeric",
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+      weekday: "long",
+    };
+    labelDate.textContent = new Intl.DateTimeFormat("es-SP", options).format(
+      now
+    );
 
     // Clear fields
     inputLoginUsername.value = inputLoginPin.value = "";
@@ -319,6 +329,9 @@ labelBalance.addEventListener("click", () => {
 currentAccount = account1;
 updateUI(currentAccount);
 containerApp.style.opacity = 100;
+
+// experiment with API Internationalizing dates
+const now = new Date();
 
 // Lectures
 const user = "Steven Thomas Williams";
