@@ -215,6 +215,7 @@ btnLogin.addEventListener("click", function (ev) {
     // const hour = `${now.getHours()}`.padStart(2, 0);
     // const min = `${now.getMinutes()}`.padStart(2, 0);
     // labelDate.textContent = `${day}/${month}/${year} ${hour}:${min}`;
+    const localeOp = currentAccount.locale;
     const options = {
       hour: "numeric",
       minute: "numeric",
@@ -223,7 +224,7 @@ btnLogin.addEventListener("click", function (ev) {
       year: "numeric",
       weekday: "long",
     };
-    labelDate.textContent = new Intl.DateTimeFormat("es-SP", options).format(
+    labelDate.textContent = new Intl.DateTimeFormat(localeOp, options).format(
       now
     );
 
@@ -329,9 +330,6 @@ labelBalance.addEventListener("click", () => {
 currentAccount = account1;
 updateUI(currentAccount);
 containerApp.style.opacity = 100;
-
-// experiment with API Internationalizing dates
-const now = new Date();
 
 // Lectures
 const user = "Steven Thomas Williams";
