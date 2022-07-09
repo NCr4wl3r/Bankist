@@ -303,8 +303,11 @@ btnLogin.addEventListener("click", function (ev) {
 let sorted = false;
 btnSort.addEventListener("click", function (ev) {
   ev.preventDefault();
+  // reset timer
+  clearInterval(timerLogOut);
+  timerLogOut = startLogOutTimer();
   sorted = !sorted;
-  displayMovements(currentAccount.movements, sorted);
+  displayMovements(currentAccount, sorted);
 });
 
 const updateUI = function (currentAcc) {
@@ -343,10 +346,18 @@ btnTransfer.addEventListener("click", function (ev) {
 
     updateUI(currentAccount);
   }
+  // reset timer
+  clearInterval(timerLogOut);
+  timerLogOut = startLogOutTimer();
 });
 
 btnLoan.addEventListener("click", function (ev) {
   ev.preventDefault();
+
+  // reset timer
+  clearInterval(timerLogOut);
+  timerLogOut = startLogOutTimer();
+
   const loanAmount = Math.floor(inputLoanAmount.value);
   // const loanAmount = Number(inputLoanAmount.value);
   inputLoanAmount.value = "";
