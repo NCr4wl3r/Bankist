@@ -220,11 +220,35 @@ const findAccount = function (nameAccount, userAccounts) {
   return account;
 };
 
-let currentAccount;
+const startLogOutTimer = function () {
+  // set time to 5 min
+  let timer = 300;
+
+  const tick = () => {
+    --timer;
+    const min = String(Math.trunc(timer / 60)).padStart(2, "0");
+    const sec = String(timer % 60).padStart(2, "0");
+    // In each call, print remaining time to UI
+    labelTimer.textContent = `${min}:${sec}`;
+
+    if (timer === 0) {
+      clearInterval(timerLogOut);
+
+      // When 0 sec, stop timer and log out user
+      labelWelcome.textContent = `Log in to get started`;
+      containerApp.style.opacity = 0;
+    }
+  };
+
+  // Call the timer every second
+  const timerLogOut = setInterval(tick, 1000);
+};
 
 createUserName(accounts);
 
+////////////////////////////////////////////////
 // Event Handlers
+let currentAccount;
 
 btnLogin.addEventListener("click", function (ev) {
   ev.preventDefault();
@@ -267,7 +291,7 @@ btnLogin.addEventListener("click", function (ev) {
     // Clear fields
     inputLoginUsername.value = inputLoginPin.value = "";
     inputLoginPin.blur();
-
+    startLogOutTimer();
     updateUI(currentAccount);
   }
 });
@@ -366,9 +390,9 @@ labelBalance.addEventListener("click", () => {
 });
 
 // Auto Log Fake:
-currentAccount = account1;
-updateUI(currentAccount);
-containerApp.style.opacity = 100;
+// currentAccount = account1;
+// updateUI(currentAccount);
+// containerApp.style.opacity = 100;
 
 // Lectures
 const user = "Steven Thomas Williams";
