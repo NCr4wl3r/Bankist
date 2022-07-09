@@ -105,21 +105,30 @@ const inputClosePin = document.querySelector(".form__input--pin");
 
 // Functions
 
+const formatedCurrency = function (loc, cur, mov) {
+  // TODO values movements x country format
+  const currencyOption = { style: "currency", currency: cur };
+
+  const formatedMov = new Intl.NumberFormat(loc, currencyOption).format(mov);
+  return formatedMov;
+};
+
 const calcDaysPassed = (date1, date2) =>
   Math.floor(Math.abs(date1 - date2) / (1000 * 60 * 60 * 24));
 
-const formatMovementDate = function (date) {
+const formatMovementDate = function (date, locale) {
   const daysPassed = calcDaysPassed(new Date(), date);
   if (daysPassed === 0) return "today";
   else if (daysPassed === 1) return "yesterday";
   else if (daysPassed <= 7) return `${daysPassed} days ago`;
-  else {
-    const day = `${date.getDate()}`.padStart(2, 0);
-    const month = `${date.getMonth() + 1}`.padStart(2, 0);
-    const year = `${date.getFullYear()}`;
-    const dateMovStr = `${day}/${month}/${year}`;
-    return dateMovStr;
-  }
+
+  // const day = `${date.getDate()}`.padStart(2, 0);
+  // const month = `${date.getMonth() + 1}`.padStart(2, 0);
+  // const year = `${date.getFullYear()}`;
+  // const dateMovStr = `${day}/${month}/${year}`;
+  // return dateMovStr;
+
+  return new Intl.DateTimeFormat(locale).format(date);
 };
 
 const displayMovements = function (acc, sort = false) {
@@ -132,7 +141,14 @@ const displayMovements = function (acc, sort = false) {
   movs.forEach((mov, i) => {
     const transactionType = mov > 0 ? "deposit" : "withdrawal";
 
-    const dateMovStr = formatMovementDate(new Date(acc.movementsDates[i]));
+    const dateMovStr = formatMovementDate(
+      new Date(acc.movementsDates[i]),
+      acc.locale
+    );
+
+    // TODO values movements x country format
+
+    const formatedMov = formatedCurrency(acc.locale, acc.currency, mov);
 
     const htmlEl = `
       <div class="movements__row">
@@ -140,7 +156,7 @@ const displayMovements = function (acc, sort = false) {
       i + 1
     } ${transactionType}</div>
     <div class="movements__date">${dateMovStr}</div>
-        <div class="movements__value">${mov.toFixed(2)}€</div>
+        <div class="movements__value">${formatedMov}</div>
       </div>`;
     containerMovements.insertAdjacentHTML("afterbegin", htmlEl);
   });
@@ -159,27 +175,44 @@ const createUserName = function (userAccounts) {
 
 const calcDisplayBalance = function (currentAcc) {
   const movements = currentAcc.movements;
+  //  values movements x country format
   currentAcc.balance = movements.reduce((prevMov, mov) => prevMov + mov, 0);
-  labelBalance.textContent = `${currentAcc.balance.toFixed(2)}EUR`;
+  labelBalance.textContent = `${formatedCurrency(
+    currentAcc.locale,
+    currentAcc.currency,
+    currentAcc.balance
+  )}`;
 };
 
 const calcDisplaySumary = function (acc) {
   const inMovements = acc.movements
     .filter((mov) => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumIn.textContent = `${inMovements.toFixed(2)}€`;
+  labelSumIn.textContent = `${formatedCurrency(
+    acc.locale,
+    acc.currency,
+    inMovements
+  )}`;
 
   const outMovements = Math.abs(
     acc.movements.filter((mov) => mov < 0).reduce((acc, mov) => acc + mov, 0)
   );
-  labelSumOut.textContent = `${outMovements.toFixed(2)}€`;
+  labelSumOut.textContent = `${formatedCurrency(
+    acc.locale,
+    acc.currency,
+    outMovements
+  )}`;
 
   const interestRate = acc.interestRate / 100; //only added if at less 1€ interest
   const interest = acc.movements
     .map((mov) => mov > 0 && mov * interestRate)
     .filter((interst) => interst >= 1)
     .reduce((acc, interest) => acc + interest, 0);
-  labelSumInterest.textContent = `${interest.toFixed(2)}€`;
+  labelSumInterest.textContent = `${formatedCurrency(
+    acc.locale,
+    acc.currency,
+    interest
+  )}`;
 };
 
 const findAccount = function (nameAccount, userAccounts) {
@@ -220,9 +253,9 @@ btnLogin.addEventListener("click", function (ev) {
       hour: "numeric",
       minute: "numeric",
       day: "2-digit",
-      month: "long",
+      month: "numeric",
       year: "numeric",
-      weekday: "long",
+      // weekday: "long",
     };
     labelDate.textContent = new Intl.DateTimeFormat(localeOp, options).format(
       now
