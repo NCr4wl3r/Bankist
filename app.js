@@ -225,7 +225,6 @@ const startLogOutTimer = function () {
   let timer = 300;
 
   const tick = () => {
-    --timer;
     const min = String(Math.trunc(timer / 60)).padStart(2, "0");
     const sec = String(timer % 60).padStart(2, "0");
     // In each call, print remaining time to UI
@@ -238,17 +237,19 @@ const startLogOutTimer = function () {
       labelWelcome.textContent = `Log in to get started`;
       containerApp.style.opacity = 0;
     }
+    timer--;
   };
-
+  tick();
   // Call the timer every second
-  const timerLogOut = setInterval(tick, 1000);
+  const timerLgOut = setInterval(tick, 1000);
+  return timerLgOut;
 };
 
 createUserName(accounts);
 
 ////////////////////////////////////////////////
 // Event Handlers
-let currentAccount;
+let currentAccount, timerLogOut;
 
 btnLogin.addEventListener("click", function (ev) {
   ev.preventDefault();
@@ -291,7 +292,10 @@ btnLogin.addEventListener("click", function (ev) {
     // Clear fields
     inputLoginUsername.value = inputLoginPin.value = "";
     inputLoginPin.blur();
-    startLogOutTimer();
+
+    // if exist a previous timer running, close it, and init the new one
+    if (timerLogOut) clearInterval(timerLogOut);
+    timerLogOut = startLogOutTimer();
     updateUI(currentAccount);
   }
 });
