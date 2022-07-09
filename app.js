@@ -240,26 +240,29 @@ btnLogin.addEventListener("click", function (ev) {
     containerApp.style.opacity = 100;
 
     // Create current date and time
-    const now = new Date();
-    // day/month/year
-    // const day = `${now.getDate()}`.padStart(2, 0);
-    // const month = `${now.getMonth() + 1}`.padStart(2, 0);
-    // const year = `${now.getFullYear()}`;
-    // const hour = `${now.getHours()}`.padStart(2, 0);
-    // const min = `${now.getMinutes()}`.padStart(2, 0);
-    // labelDate.textContent = `${day}/${month}/${year} ${hour}:${min}`;
-    const localeOp = currentAccount.locale;
-    const options = {
-      hour: "numeric",
-      minute: "numeric",
-      day: "2-digit",
-      month: "numeric",
-      year: "numeric",
-      // weekday: "long",
-    };
-    labelDate.textContent = new Intl.DateTimeFormat(localeOp, options).format(
-      now
-    );
+    setInterval(() => {
+      const now = new Date();
+      // day/month/year
+      // const day = `${now.getDate()}`.padStart(2, 0);
+      // const month = `${now.getMonth() + 1}`.padStart(2, 0);
+      // const year = `${now.getFullYear()}`;
+      // const hour = `${now.getHours()}`.padStart(2, 0);
+      // const min = `${now.getMinutes()}`.padStart(2, 0);
+      // labelDate.textContent = `${day}/${month}/${year} ${hour}:${min}`;
+      const localeOp = currentAccount.locale;
+      const options = {
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+        day: "2-digit",
+        month: "numeric",
+        year: "numeric",
+        // weekday: "long",
+      };
+      labelDate.textContent = new Intl.DateTimeFormat(localeOp, options).format(
+        now
+      );
+    }, 1000);
 
     // Clear fields
     inputLoginUsername.value = inputLoginPin.value = "";
@@ -323,12 +326,15 @@ btnLoan.addEventListener("click", function (ev) {
     loanAmount > 0 &&
     currentAccount.movements.some((mov) => mov > loanAmount * 0.1)
   ) {
-    // Add Loan
-    currentAccount.movements.push(loanAmount);
+    // simulate a real loan, setting some time to make it effective
+    setTimeout(function () {
+      // Add Loan
+      currentAccount.movements.push(loanAmount);
 
-    // date of the transfer
-    currentAccount.movementsDates.push(new Date().toISOString());
-    updateUI(currentAccount);
+      // date of the transfer
+      currentAccount.movementsDates.push(new Date().toISOString());
+      updateUI(currentAccount);
+    }, 3000);
   }
 });
 
